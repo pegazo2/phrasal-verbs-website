@@ -3,124 +3,272 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aprender Phrasal Verbs - Básico</title>
+<title>Phrasal Verbs Trainer - 99 PVs</title>
 <style>
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(to bottom, #e0f7fa, #ffffff);
-    color: #333;
-    margin: 0;
-    padding: 20px;
-  }
-  h2 {
-    text-align: center;
-    color: #00796b;
-    margin-bottom: 30px;
-  }
-  .pv-container {
-    background: #ffffff;
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    transition: transform 0.2s;
-  }
-  .pv-container:hover {
-    transform: scale(1.02);
-  }
-  .pv-name {
-    font-weight: bold;
-    font-size: 1.3rem;
-    color: #004d40;
-  }
-  .phonetic {
-    color: #555;
-    font-style: italic;
-    display: block;
-    margin-top: 2px;
-  }
-  .example {
-    margin-top: 10px;
-    font-size: 1rem;
-  }
-  .example .phonetic {
-    font-style: normal;
-    color: #00796b;
-  }
-  button {
-    margin: 8px 5px 5px 0;
-    padding: 6px 12px;
-    cursor: pointer;
-    border-radius: 6px;
-    border: none;
-    background-color: #00796b;
-    color: #fff;
-    font-weight: bold;
-    transition: background-color 0.2s;
-  }
-  button:hover {
-    background-color: #004d40;
-  }
+body {
+  font-family: Arial, sans-serif;
+  background: #f9f9f9;
+  color: #333;
+  padding: 20px;
+}
+h1, h2 {
+  text-align: center;
+}
+.level-title {
+  margin-top: 2rem;
+  color: #0066cc;
+}
+.phrasal-verb-item {
+  background: #fff;
+  border: 1px solid #ccddee;
+  border-radius: 5px;
+  margin: 10px 0;
+  padding: 10px;
+}
+.phrasal-verb-item span {
+  display: block;
+  margin: 3px 0;
+}
+.listen-btn {
+  margin: 5px 5px 5px 0;
+  padding: 3px 8px;
+  cursor: pointer;
+  background: #0066cc;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+}
+.listen-btn:hover {
+  background: #004999;
+}
+#practiceMode {
+  margin-top: 30px;
+  padding: 15px;
+  background: #eef7ff;
+  border-radius: 8px;
+}
+#practiceMode input {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+}
+#practiceMode button {
+  margin-top: 10px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
 </style>
 </head>
 <body>
-<h2>📘 Phrasal Verbs - Nivel Básico</h2>
+<h1>Phrasal Verbs Trainer - 99 PVs</h1>
+<button onclick="startPractice()">Modo Práctica</button>
 
-<div class="pv-container">
-  <div class="pv-name">get up <span class="phonetic">/ɡɛt ʌp/</span></div>
-  <div class="example">
-    Example: I get up early every day. <br>
-    <span class="phonetic">/aɪ ɡɛt ʌp ˈɜrli ˈɛvri deɪ/</span>
-  </div>
-  <button onclick="speakText('get up')">🎧 Listen Phrasal Verb</button>
-  <button onclick="speakText('I get up early every day.')">🎧 Listen Example</button>
+<div id="phrasalVerbsList"></div>
+
+<div id="practiceMode" style="display:none;">
+<h2>Modo Práctica</h2>
+<p id="practiceInstructions"></p>
+<div id="practiceContent">
+  <button onclick="playPracticeSentence('normal')">Listen Normal</button>
+  <button onclick="playPracticeSentence('slow')">Listen Lento</button>
+  <input type="text" id="practiceInput" placeholder="Escribe aquí..." oninput="checkPracticeInput()">
+  <button onclick="revealPracticeAnswer()">Revelar Phrasal Verb</button>
+  <p id="practiceFeedback" style="font-weight:bold;margin-top:5px;"></p>
 </div>
-
-<div class="pv-container">
-  <div class="pv-name">put on <span class="phonetic">/pʊt ɑn/</span></div>
-  <div class="example">
-    Example: She put on her jacket before leaving. <br>
-    <span class="phonetic">/ʃi pʊt ɑn hɜr ˈdʒækɪt bɪˈfɔr ˈlivɪŋ/</span>
-  </div>
-  <button onclick="speakText('put on')">🎧 Listen Phrasal Verb</button>
-  <button onclick="speakText('She put on her jacket before leaving.')">🎧 Listen Example</button>
-</div>
-
-<div class="pv-container">
-  <div class="pv-name">take off <span class="phonetic">/teɪk ɔf/</span></div>
-  <div class="example">
-    Example: The plane takes off at 9 PM. <br>
-    <span class="phonetic">/ðə pleɪn teɪks ɔf æt naɪn piː ɛm/</span>
-  </div>
-  <button onclick="speakText('take off')">🎧 Listen Phrasal Verb</button>
-  <button onclick="speakText('The plane takes off at 9 PM.')">🎧 Listen Example</button>
 </div>
 
 <script>
-let femaleVoice = null;
+// --- Lista de 99 phrasal verbs ---
+const phrasalVerbs = [
+  // --- Nivel Básico (33) ---
+  {pv:"get up", phonetic:"/ɡɛt ʌp/", example:"I get up early every day.", examplePhonetic:"/aɪ ɡɛt ʌp ˈɜːrli ˈɛvri deɪ/", level:"basico"},
+  {pv:"put on", phonetic:"/pʊt ɒn/", example:"She put on her jacket before leaving.", examplePhonetic:"/ʃi pʊt ɒn hɜːr ˈdʒækɪt bɪˈfɔr ˈliːvɪŋ/", level:"basico"},
+  {pv:"take off", phonetic:"/teɪk ɒf/", example:"The plane takes off at 9 PM.", examplePhonetic:"/ðə pleɪn teɪks ɒf æt naɪn piː ɛm/", level:"basico"},
+  {pv:"turn on", phonetic:"/tɜrn ɒn/", example:"Please turn on the lights.", examplePhonetic:"/pliːz tɜrn ɒn ðə laɪts/", level:"basico"},
+  {pv:"turn off", phonetic:"/tɜrn ɒf/", example:"Turn off the TV when you finish.", examplePhonetic:"/tɜrn ɒf ðə tiːvi wɛn ju fɪnɪʃ/", level:"basico"},
+  {pv:"look for", phonetic:"/lʊk fɔr/", example:"I'm looking for my keys.", examplePhonetic:"/aɪm ˈlʊkɪŋ fɔr maɪ kiːz/", level:"basico"},
+  {pv:"give up", phonetic:"/ɡɪv ʌp/", example:"Don't give up on your dreams.", examplePhonetic:"/doʊnt ɡɪv ʌp ɒn jɔr driːmz/", level:"basico"},
+  {pv:"bring up", phonetic:"/brɪŋ ʌp/", example:"She brought up an interesting topic.", examplePhonetic:"/ʃi brɔt ʌp æn ˈɪntrəstɪŋ ˈtɒpɪk/", level:"basico"},
+  {pv:"call off", phonetic:"/kɔːl ɒf/", example:"They called off the meeting.", examplePhonetic:"/ðeɪ kɔːld ɒf ðə ˈmiːtɪŋ/", level:"basico"},
+  {pv:"come back", phonetic:"/kʌm bæk/", example:"He will come back tomorrow.", examplePhonetic:"/hi wɪl kʌm bæk təˈmɑːroʊ/", level:"basico"},
+  {pv:"look after", phonetic:"/lʊk ˈæftər/", example:"She looks after her younger brother.", examplePhonetic:"/ʃi lʊks ˈæftər hɜr ˈjʌŋɡər ˈbrʌðər/", level:"basico"},
+  {pv:"make up", phonetic:"/meɪk ʌp/", example:"They made up after the argument.", examplePhonetic:"/ðeɪ meɪd ʌp ˈæftər ði ˈɑːrɡjumənt/", level:"basico"},
+  {pv:"run out", phonetic:"/rʌn aʊt/", example:"We ran out of milk.", examplePhonetic:"/wi ræn aʊt əv mɪlk/", level:"basico"},
+  {pv:"set up", phonetic:"/sɛt ʌp/", example:"He set up a new company.", examplePhonetic:"/hi sɛt ʌp ə nu ˈkʌmpəni/", level:"basico"},
+  {pv:"pick up", phonetic:"/pɪk ʌp/", example:"I will pick you up at the airport.", examplePhonetic:"/aɪ wɪl pɪk ju ʌp æt ði ˈɛərpɔrt/", level:"basico"},
+  {pv:"break down", phonetic:"/breɪk daʊn/", example:"The car broke down on the highway.", examplePhonetic:"/ðə kɑr broʊk daʊn ɒn ðə ˈhaɪweɪ/", level:"basico"},
+  {pv:"put off", phonetic:"/pʊt ɒf/", example:"They put off the meeting until next week.", examplePhonetic:"/ðeɪ pʊt ɒf ðə ˈmiːtɪŋ ənˈtɪl nɛkst wiːk/", level:"basico"},
+  {pv:"check out", phonetic:"/tʃɛk aʊt/", example:"Check out this new restaurant.", examplePhonetic:"/tʃɛk aʊt ðɪs nu ˈrɛstrɒnt/", level:"basico"},
+  {pv:"go on", phonetic:"/ɡoʊ ɒn/", example:"Please go on with your story.", examplePhonetic:"/pliːz ɡoʊ ɒn wɪð jɔr ˈstɔːri/", level:"basico"},
+  {pv:"fill out", phonetic:"/fɪl aʊt/", example:"Please fill out this form.", examplePhonetic:"/pliːz fɪl aʊt ðɪs fɔrm/", level:"basico"},
+  {pv:"give in", phonetic:"/ɡɪv ɪn/", example:"She finally gave in to their demands.", examplePhonetic:"/ʃi ˈfaɪnəli ɡeɪv ɪn tu ðɛr dɪˈmændz/", level:"basico"},
+  {pv:"hold on", phonetic:"/hoʊld ɒn/", example:"Hold on a minute, I'll be right back.", examplePhonetic:"/hoʊld ɒn ə ˈmɪnɪt, aɪl bi raɪt bæk/", level:"basico"},
+  {pv:"look up", phonetic:"/lʊk ʌp/", example:"I need to look up that word in the dictionary.", examplePhonetic:"/aɪ nid tu lʊk ʌp ðæt wɜrd ɪn ðə ˈdɪkʃəˌnɛri/", level:"basico"},
+  {pv:"run into", phonetic:"/rʌn ˈɪntu/", example:"I ran into an old friend yesterday.", examplePhonetic:"/aɪ ræn ˈɪntu æn oʊld frɛnd ˈjɛstərˌdeɪ/", level:"basico"},
+  {pv:"take over", phonetic:"/teɪk ˈoʊvər/", example:"The company was taken over by a larger firm.", examplePhonetic:"/ðə ˈkʌmpəni wəz ˈteɪkən ˈoʊvər baɪ ə ˈlɑrdʒər fɜrm/", level:"basico"},
+  {pv:"turn up", phonetic:"/tɜrn ʌp/", example:"He turned up late to the party.", examplePhonetic:"/hi tɜrnd ʌp leɪt tu ðə ˈpɑrti/", level:"basico"},
+  {pv:"turn down", phonetic:"/tɜrn daʊn/", example:"She turned down the job offer.", examplePhonetic:"/ʃi tɜrnd daʊn ðə ʤɑb ˈɔfər/", level:"basico"},
+  {pv:"work out", phonetic:"/wɜrk aʊt/", example:"Everything worked out well in the end.", examplePhonetic:"/ˈɛvrɪˌθɪŋ wɜrkt aʊt wɛl ɪn ði ɛnd/", level:"basico"},
+  {pv:"bring back", phonetic:"/brɪŋ bæk/", example:"That song brings back memories.", examplePhonetic:"/ðæt sɒŋ brɪŋz bæk ˈmɛməriz/", level:"basico"},
+  {pv:"come across", phonetic:"/kʌm əˈkrɒs/", example:"I came across an interesting article today.", examplePhonetic:"/aɪ keɪm əˈkrɒs æn ˈɪntrəstɪŋ ˈɑːrtɪkl təˈdeɪ/", level:"basico"},
+  {pv:"cut down", phonetic:"/kʌt daʊn/", example:"He cut down on sugar to lose weight.", examplePhonetic:"/hi kʌt daʊn ɒn ˈʃʊɡər tu luːz weɪt/", level:"basico"},
+  {pv:"get along", phonetic:"/ɡɛt əˈlɒŋ/", example:"They get along very well.", examplePhonetic:"/ðeɪ ɡɛt əˈlɒŋ ˈvɛri wɛl/", level:"basico"},
+  {pv:"give away", phonetic:"/ɡɪv əˈweɪ/", example:"She gave away all her old clothes.", examplePhonetic:"/ʃi ɡeɪv əˈweɪ ɔːl hɜr oʊld kloʊðz/", level:"basico"},
+  {pv:"go back", phonetic:"/ɡoʊ bæk/", example:"I want to go back home.", examplePhonetic:"/aɪ wɑnt tu ɡoʊ bæk hoʊm/", level:"basico"},
+  {pv:"hang out", phonetic:"/hæŋ aʊt/", example:"We like to hang out at the mall.", examplePhonetic:"/wi laɪk tu hæŋ aʊt æt ðə mɔl/", level:"basico"},
+  {pv:"keep on", phonetic:"/kiːp ɒn/", example:"Keep on trying, don't give up.", examplePhonetic:"/kiːp ɒn ˈtraɪɪŋ, doʊnt ɡɪv ʌp/", level:"basico"},
+  {pv:"look out", phonetic:"/lʊk aʊt/", example:"Look out! There's a car coming.", examplePhonetic:"/lʊk aʊt! ðɛrz ə kɑr ˈkʌmɪŋ/", level:"basico"},
+  {pv:"move on", phonetic:"/muːv ɒn/", example:"It's time to move on from the past.", examplePhonetic:"/ɪts taɪm tu muːv ɒn frəm ðə pæst/", level:"basico"},
+  {pv:"put up with", phonetic:"/pʊt ʌp wɪð/", example:"I can't put up with the noise anymore.", examplePhonetic:"/aɪ kænt pʊt ʌp wɪð ðə nɔɪz ˈɛniˌmɔr/", level:"basico"},
+  {pv:"set off", phonetic:"/sɛt ɒf/", example:"We set off early in the morning.", examplePhonetic:"/wi sɛt ɒf ˈɜrli ɪn ðə ˈmɔrnɪŋ/", level:"basico"},
+  {pv:"show up", phonetic:"/ʃoʊ ʌp/", example:"He didn't show up for the meeting.", examplePhonetic:"/hi ˈdɪdnt ʃoʊ ʌp fɔr ðə ˈmiːtɪŋ/", level:"basico"},
+  {pv:"take back", phonetic:"/teɪk bæk/", example:"I take back what I said.", examplePhonetic:"/aɪ teɪk bæk wʌt aɪ sɛd/", level:"basico"},
+  {pv:"think over", phonetic:"/θɪŋk ˈoʊvər/", example:"I'll think over your proposal.", examplePhonetic:"/aɪl θɪŋk ˈoʊvər jɔr prəˈpoʊzəl/", level:"basico"},
+  {pv:"try on", phonetic:"/traɪ ɒn/", example:"She tried on the dress before buying it.", examplePhonetic:"/ʃi traɪd ɒn ðə drɛs bɪˈfɔr ˈbaɪɪŋ ɪt/", level:"basico"},
+  {pv:"turn around", phonetic:"/tɜrn əˈraʊnd/", example:"The company turned around its losses.", examplePhonetic:"/ðə ˈkʌmpəni tɜrnd əˈraʊnd ɪts ˈlɔsɪz/", level:"basico"},
+  {pv:"wake up", phonetic:"/weɪk ʌp/", example:"I wake up at 6 every day.", examplePhonetic:"/aɪ weɪk ʌp æt sɪks ˈɛvri deɪ/", level:"basico"},
+  {pv:"watch out", phonetic:"/wɑtʃ aʊt/", example:"Watch out for the slippery floor.", examplePhonetic:"/wɑtʃ aʊt fɔr ðə ˈslɪpəri flɔr/", level:"basico"},
+  {pv:"write down", phonetic:"/raɪt daʊn/", example:"Write down your homework.", examplePhonetic:"/raɪt daʊn jɔr ˈhoʊmwɜrk/", level:"basico"},
 
-function loadFemaleVoice() {
-  const voices = speechSynthesis.getVoices();
-  if (voices.length > 0 && !femaleVoice) {
-    // Elegir voz femenina de en-US o la primera disponible
-    femaleVoice = voices.find(v => (v.lang === 'en-US' || v.lang.startsWith('en')) && v.name.toLowerCase().includes('female')) 
-                  || voices.find(v => v.lang === 'en-US') 
-                  || voices[0];
+  // --- Nivel Intermedio (33) ---
+  {pv:"back up", phonetic:"/bæk ʌp/", example:"Back up your files regularly.", examplePhonetic:"/bæk ʌp jʊr faɪlz ˈrɛɡjələrli/", level:"intermedio"},
+  {pv:"blow up", phonetic:"/bloʊ ʌp/", example:"The bomb blew up unexpectedly.", examplePhonetic:"/ðə bɑm blu ʌp ˌʌnɪkˈspɛktɪdli/", level:"intermedio"},
+  {pv:"break up", phonetic:"/breɪk ʌp/", example:"They broke up last month.", examplePhonetic:"/ðeɪ broʊk ʌp læst mʌnθ/", level:"intermedio"},
+  {pv:"bring in", phonetic:"/brɪŋ ɪn/", example:"The company brought in new investors.", examplePhonetic:"/ðə ˈkʌmpəni brɔt ɪn nu ɪnˈvɛstərz/", level:"intermedio"},
+  {pv:"carry on", phonetic:"/ˈkæri ɒn/", example:"Carry on with your work.", examplePhonetic:"/ˈkæri ɒn wɪð jɔr wɜrk/", level:"intermedio"},
+  {pv:"check in", phonetic:"/tʃɛk ɪn/", example:"We checked in at the hotel.", examplePhonetic:"/wi tʃɛkt ɪn æt ðə hoʊˈtɛl/", level:"intermedio"},
+  {pv:"check up on", phonetic:"/tʃɛk ʌp ɒn/", example:"I need to check up on my health.", examplePhonetic:"/aɪ nid tu tʃɛk ʌp ɒn maɪ hɛlθ/", level:"intermedio"},
+  {pv:"come up with", phonetic:"/kʌm ʌp wɪð/", example:"She came up with a great idea.", examplePhonetic:"/ʃi keɪm ʌp wɪð ə ɡreɪt aɪˈdiə/", level:"intermedio"},
+  {pv:"cut out", phonetic:"/kʌt aʊt/", example:"Cut out the unnecessary details.", examplePhonetic:"/kʌt aʊt ði ˌʌnˈnɛsəsəri dɪˈteɪlz/", level:"intermedio"},
+  {pv:"drop off", phonetic:"/drɒp ɒf/", example:"I will drop you off at the station.", examplePhonetic:"/aɪ wɪl drɒp ju ɒf æt ðə ˈsteɪʃən/", level:"intermedio"},
+  {pv:"figure out", phonetic:"/ˈfɪɡər aʊt/", example:"I can't figure out this problem.", examplePhonetic:"/aɪ kænt ˈfɪɡər aʊt ðɪs ˈprɑbləm/", level:"intermedio"},
+  {pv:"fill in", phonetic:"/fɪl ɪn/", example:"Please fill in the blanks.", examplePhonetic:"/pliːz fɪl ɪn ðə blæŋks/", level:"intermedio"},
+  {pv:"get over", phonetic:"/ɡɛt ˈoʊvər/", example:"It took her a long time to get over the flu.", examplePhonetic:"/ɪt tʊk hɜr ə lɔŋ taɪm tu ɡɛt ˈoʊvər ðə flu/", level:"intermedio"},
+  {pv:"give out", phonetic:"/ɡɪv aʊt/", example:"They gave out free samples.", examplePhonetic:"/ðeɪ ɡeɪv aʊt fri ˈsæmpəlz/", level:"intermedio"},
+  {pv:"go over", phonetic:"/ɡoʊ ˈoʊvər/", example:"Let's go over the plan again.", examplePhonetic:"/lɛts ɡoʊ ˈoʊvər ðə plæn əˈɡɛn/", level:"intermedio"},
+  {pv:"hold up", phonetic:"/hoʊld ʌp/", example:"The traffic held us up.", examplePhonetic:"/ðə ˈtræfɪk hɛld ʌs ʌp/", level:"intermedio"},
+  {pv:"keep up", phonetic:"/kiːp ʌp/", example:"Keep up the good work.", examplePhonetic:"/kiːp ʌp ðə ɡʊd wɜrk/", level:"intermedio"},
+  {pv:"look forward to", phonetic:"/lʊk ˈfɔrwərd tu/", example:"I look forward to meeting you.", examplePhonetic:"/aɪ lʊk ˈfɔrwərd tu ˈmitɪŋ ju/", level:"intermedio"},
+  {pv:"make out", phonetic:"/meɪk aʊt/", example:"I can't make out what he said.", examplePhonetic:"/aɪ kænt meɪk aʊt wʌt hi sɛd/", level:"intermedio"},
+  {pv:"pass away", phonetic:"/pæs əˈweɪ/", example:"His grandfather passed away last year.", examplePhonetic:"/hɪz ˈɡrænfɑðər pæsəd əˈweɪ læst jɪr/", level:"intermedio"},
+  {pv:"pick out", phonetic:"/pɪk aʊt/", example:"She picked out a beautiful dress.", examplePhonetic:"/ʃi pɪkt aʊt ə ˈbjuːtəfəl drɛs/", level:"intermedio"},
+  {pv:"put away", phonetic:"/pʊt əˈweɪ/", example:"Put away your toys.", examplePhonetic:"/pʊt əˈweɪ jɔr tɔɪz/", level:"intermedio"},
+  {pv:"settle down", phonetic:"/ˈsɛtl daʊn/", example:"He wants to settle down in a small town.", examplePhonetic:"/hi wɑnts tu ˈsɛtl daʊn ɪn ə smɔl taʊn/", level:"intermedio"},
+  {pv:"take up", phonetic:"/teɪk ʌp/", example:"She took up painting last year.", examplePhonetic:"/ʃi tʊk ʌp ˈpeɪntɪŋ læst jɪr/", level:"intermedio"},
+  {pv:"talk over", phonetic:"/tɔk ˈoʊvər/", example:"We need to talk over our plans.", examplePhonetic:"/wi nid tu tɔk ˈoʊvər aʊər plænz/", level:"intermedio"},
+  {pv:"try out", phonetic:"/traɪ aʊt/", example:"She tried out for the school play.", examplePhonetic:"/ʃi traɪd aʊt fɔr ðə skul pleɪ/", level:"intermedio"},
+  {pv:"turn in", phonetic:"/tɜrn ɪn/", example:"Please turn in your assignments on time.", examplePhonetic:"/pliːz tɜrn ɪn jɔr əˈsaɪnmənts ɒn taɪm/", level:"intermedio"},
+  {pv:"watch over", phonetic:"/wɑtʃ ˈoʊvər/", example:"The teacher watched over the students.", examplePhonetic:"/ðə ˈtiːtʃər wɑtʃt ˈoʊvər ðə ˈstudənts/", level:"intermedio"},
+  {pv:"work on", phonetic:"/wɜrk ɒn/", example:"I am working on a new project.", examplePhonetic:"/aɪ æm ˈwɜrkɪŋ ɒn ə nu ˈprɑdʒɛkt/", level:"intermedio"},
+  {pv:"call back", phonetic:"/kɔl bæk/", example:"I'll call you back later.", examplePhonetic:"/aɪl kɔl ju bæk ˈleɪtər/", level:"intermedio"},
+  {pv:"come in", phonetic:"/kʌm ɪn/", example:"Please come in and have a seat.", examplePhonetic:"/pliːz kʌm ɪn ənd hæv ə siːt/", level:"intermedio"},
+  {pv:"get together", phonetic:"/ɡɛt təˈɡɛðər/", example:"Let's get together this weekend.", examplePhonetic:"/lɛts ɡɛt təˈɡɛðər ðɪs ˈwiːkɛnd/", level:"intermedio"},
+  {pv:"give back", phonetic:"/ɡɪv bæk/", example:"Please give back my book.", examplePhonetic:"/pliːz ɡɪv bæk maɪ bʊk/", level:"intermedio"},
+  {pv:"go through", phonetic:"/ɡoʊ θruː/", example:"We went through many challenges.", examplePhonetic:"/wi wɛnt θruː ˈmɛni ˈʧælɪndʒɪz/", level:"intermedio"},
+  {pv:"look into", phonetic:"/lʊk ˈɪntu/", example:"They will look into the issue.", examplePhonetic:"/ðeɪ wɪl lʊk ˈɪntu ði ˈɪʃu/", level:"intermedio"},
+
+  // --- Nivel Difícil (33) ---
+  {pv:"account for", phonetic:"/əˈkaʊnt fɔr/", example:"Can you account for your absence?", examplePhonetic:"/kæn ju əˈkaʊnt fɔr jɔr ˈæbsəns/", level:"dificil"},
+  {pv:"act up", phonetic:"/ækt ʌp/", example:"The printer is acting up again.", examplePhonetic:"/ðə ˈprɪntər ɪz ˈæktɪŋ ʌp əˈɡɛn/", level:"dificil"},
+  {pv:"answer back", phonetic:"/ˈænsər bæk/", example:"Don't answer back to your parents.", examplePhonetic:"/doʊnt ˈænsər bæk tu jɔr ˈpɛrənts/", level:"dificil"},
+  {pv:"back out", phonetic:"/bæk aʊt/", example:"He backed out of the deal.", examplePhonetic:"/hi bækd aʊt ʌv ðə dil/", level:"dificil"},
+  {pv:"beef up", phonetic:"/biːf ʌp/", example:"They beefed up security for the event.", examplePhonetic:"/ðeɪ bift ʌp sɪˈkjʊrəti fɔr ði ɪˈvɛnt/", level:"dificil"},
+  {pv:"blow over", phonetic:"/bloʊ ˈoʊvər/", example:"The scandal blew over quickly.", examplePhonetic:"/ðə ˈskændəl bloʊ ˈoʊvər ˈkwɪkli/", level:"dificil"},
+  {pv:"brush up", phonetic:"/brʌʃ ʌp/", example:"I need to brush up on my Spanish.", examplePhonetic:"/aɪ nid tu brʌʃ ʌp ɒn maɪ ˈspænɪʃ/", level:"dificil"},
+  {pv:"burn out", phonetic:"/bɜrn aʊt/", example:"He burned out after working too much.", examplePhonetic:"/hi bɜrnd aʊt ˈæftər ˈwɜrkɪŋ tu mʌʧ/", level:"dificil"},
+  {pv:"call on", phonetic:"/kɔl ɒn/", example:"The teacher called on me to answer.", examplePhonetic:"/ðə ˈtiːʧər kɔld ɒn mi tu ˈænsər/", level:"dificil"},
+  {pv:"clamp down on", phonetic:"/klæmp daʊn ɒn/", example:"The government clamped down on illegal activities.", examplePhonetic:"/ðə ˈɡʌvərnmənt klæmpt daʊn ɒn ɪˈliːɡəl ækˈtɪvɪtiz/", level:"dificil"},
+  {pv:"come forward", phonetic:"/kʌm ˈfɔrwərd/", example:"Witnesses came forward to help.", examplePhonetic:"/ˈwɪtnəsɪz keɪm ˈfɔrwərd tu hɛlp/", level:"dificil"},
+  {pv:"dig into", phonetic:"/dɪɡ ˈɪntu/", example:"The journalists dug into the scandal.", examplePhonetic:"/ðə ˈʤɜrnəlɪsts dʌɡ ˈɪntu ðə ˈskændəl/", level:"dificil"},
+  {pv:"do away with", phonetic:"/du əˈweɪ wɪð/", example:"They did away with outdated rules.", examplePhonetic:"/ðeɪ dɪd əˈweɪ wɪð ˌaʊtˈdeɪtɪd rulz/", level:"dificil"},
+  {pv:"draw up", phonetic:"/drɔ ʌp/", example:"They drew up a contract.", examplePhonetic:"/ðeɪ dru ʌp ə ˈkɑntrækt/", level:"dificil"},
+  {pv:"face up to", phonetic:"/feɪs ʌp tu/", example:"You must face up to your responsibilities.", examplePhonetic:"/ju mʌst feɪs ʌp tu jɔr rɪˌspɑnsəˈbɪlɪtiz/", level:"dificil"},
+  {pv:"fend off", phonetic:"/fɛnd ɒf/", example:"He fended off the attackers.", examplePhonetic:"/hi fɛndɪd ɒf ði əˈtækərz/", level:"dificil"},
+  {pv:"get across", phonetic:"/ɡɛt əˈkrɒs/", example:"She got her point across clearly.", examplePhonetic:"/ʃi ɡɑt hɜr pɔɪnt əˈkrɒs ˈklɪrli/", level:"dificil"},
+  {pv:"give off", phonetic:"/ɡɪv ɒf/", example:"The flowers give off a nice smell.", examplePhonetic:"/ðə ˈflaʊərz ɡɪv ɒf ə naɪs smɛl/", level:"dificil"},
+  {pv:"go along with", phonetic:"/ɡoʊ əˈlɔŋ wɪð/", example:"I will go along with your plan.", examplePhonetic:"/aɪ wɪl ɡoʊ əˈlɔŋ wɪð jɔr plæn/", level:"dificil"},
+  {pv:"hold back", phonetic:"/hoʊld bæk/", example:"He held back his anger.", examplePhonetic:"/hi hɛld bæk hɪz ˈæŋɡər/", level:"dificil"},
+  {pv:"jack up", phonetic:"/ʤæk ʌp/", example:"They jacked up the prices.", examplePhonetic:"/ðeɪ ʤækt ʌp ðə ˈpraɪsɪz/", level:"dificil"},
+  {pv:"lay off", phonetic:"/leɪ ɒf/", example:"The company laid off 100 workers.", examplePhonetic:"/ðə ˈkʌmpəni leɪd ɒf wʌn hʌndrəd ˈwɜrkərz/", level:"dificil"},
+  {pv:"let down", phonetic:"/lɛt daʊn/", example:"Don't let me down.", examplePhonetic:"/doʊnt lɛt mi daʊn/", level:"dificil"},
+  {pv:"live up to", phonetic:"/lɪv ʌp tu/", example:"He couldn't live up to the expectations.", examplePhonetic:"/hi ˈkʊdnt lɪv ʌp tu ði ˌɛkspɛkˈteɪʃənz/", level:"dificil"},
+  {pv:"look back on", phonetic:"/lʊk bæk ɒn/", example:"She looked back on her childhood fondly.", examplePhonetic:"/ʃi lʊkt bæk ɒn hɜr ˈʧaɪldhʊd ˈfɒndli/", level:"dificil"},
+  {pv:"make up for", phonetic:"/meɪk ʌp fɔr/", example:"He tried to make up for his mistake.", examplePhonetic:"/hi traɪd tu meɪk ʌp fɔr hɪz mɪˈsteɪk/", level:"dificil"},
+  {pv:"pass on", phonetic:"/pæs ɒn/", example:"Please pass on the message.", examplePhonetic:"/pliːz pæs ɒn ðə ˈmɛsɪdʒ/", level:"dificil"},
+  {pv:"pay back", phonetic:"/peɪ bæk/", example:"He paid back the loan.", examplePhonetic:"/hi peɪd bæk ðə loʊn/", level:"dificil"},
+  {pv:"point out", phonetic:"/pɔɪnt aʊt/", example:"He pointed out the mistake.", examplePhonetic:"/hi ˈpɔɪntɪd aʊt ðə mɪsˈteɪk/", level:"dificil"},
+  {pv:"put down", phonetic:"/pʊt daʊn/", example:"He put down his ideas in writing.", examplePhonetic:"/hi pʊt daʊn hɪz aɪˈdiəz ɪn ˈraɪtɪŋ/", level:"dificil"},
+  {pv:"set aside", phonetic:"/sɛt əˈsaɪd/", example:"They set aside money for emergencies.", examplePhonetic:"/ðeɪ sɛt əˈsaɪd ˈmʌni fɔr ɪˈmɜrdʒənsiz/", level:"dificil"},
+  {pv:"stand up for", phonetic:"/stænd ʌp fɔr/", example:"You must stand up for yourself.", examplePhonetic:"/ju mʌst stænd ʌp fɔr jɔrˈsɛlf/", level:"dificil"},
+  {pv:"take in", phonetic:"/teɪk ɪn/", example:"She took in a stray cat.", examplePhonetic:"/ʃi tʊk ɪn ə streɪ kæt/", level:"dificil"},
+  {pv:"throw away", phonetic:"/θroʊ əˈweɪ/", example:"Don't throw away old books.", examplePhonetic:"/doʊnt θroʊ əˈweɪ oʊld bʊks/", level:"dificil"},
+  {pv:"turn out", phonetic:"/tɜrn aʊt/", example:"The event turned out to be successful.", examplePhonetic:"/ði ɪˈvɛnt tɜrnd aʊt tu bi səkˈsɛsfəl/", level:"dificil"},
+  {pv:"use up", phonetic:"/juːz ʌp/", example:"We used up all the milk.", examplePhonetic:"/wi juzd ʌp ɔl ðə mɪlk/", level:"dificil"},
+  {pv:"watch out for", phonetic:"/wɑtʃ aʊt fɔr/", example:"Watch out for pickpockets.", examplePhonetic:"/wɑtʃ aʊt fɔr ˈpɪkˌpɑkɪts/", level:"dificil"},
+  {pv:"work up", phonetic:"/wɜrk ʌp/", example:"He worked up a sweat in the gym.", examplePhonetic:"/hi wɜrkt ʌp ə swɛt ɪn ðə ʤɪm/", level:"dificil"}
+];
+
+// --- Función para mostrar lista ---
+function renderPVs() {
+  const container = document.getElementById('phrasalVerbsList');
+  let html = '';
+  ['basico','intermedio','dificil'].forEach(level=>{
+    html += `<h2 class="level-title">${level.charAt(0).toUpperCase()+level.slice(1)}</h2>`;
+    phrasalVerbs.filter(p=>p.level===level).forEach(pv=>{
+      html += `<div class="phrasal-verb-item">
+        <span><strong>${pv.pv}</strong> ${pv.phonetic}</span>
+        <span>${pv.example}</span>
+        <span>${pv.examplePhonetic}</span>
+        <button class="listen-btn" onclick="speak('${pv.pv}')">Listen PV</button>
+        <button class="listen-btn" onclick="speak('${pv.example}')">Listen Example</button>
+      </div>`;
+    });
+  });
+  container.innerHTML = html;
+}
+
+// --- Función Text-to-Speech ---
+function speak(text) {
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'en-US';
+  speechSynthesis.speak(utter);
+}
+
+// --- Modo Práctica ---
+let practiceIndex = 0;
+let practicePV = {};
+
+function startPractice() {
+  document.getElementById('practiceMode').style.display = 'block';
+  practiceIndex = Math.floor(Math.random()*phrasalVerbs.length);
+  practicePV = phrasalVerbs[practiceIndex];
+  document.getElementById('practiceInstructions').innerText = `Escribe el phrasal verb escuchado o que completa la oración:`;
+  document.getElementById('practiceInput').value = '';
+  document.getElementById('practiceFeedback').innerText = '';
+}
+
+function playPracticeSentence(speed) {
+  const utter = new SpeechSynthesisUtterance(practicePV.example);
+  utter.lang = 'en-US';
+  utter.rate = (speed==='slow') ? 0.6 : 1;
+  speechSynthesis.speak(utter);
+}
+
+function checkPracticeInput() {
+  const input = document.getElementById('practiceInput').value.trim().toLowerCase();
+  if(input===practicePV.pv.toLowerCase()) {
+    document.getElementById('practiceFeedback').innerText = '✅ Correcto!';
+  } else {
+    document.getElementById('practiceFeedback').innerText = '';
   }
 }
 
-speechSynthesis.onvoiceschanged = () => {
-  loadFemaleVoice();
-};
-
-function speakText(text) {
-  loadFemaleVoice();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = 'en-US';
-  if (femaleVoice) utterance.voice = femaleVoice;
-  utterance.rate = 1;
-  speechSynthesis.speak(utterance);
+function revealPracticeAnswer() {
+  document.getElementById('practiceFeedback').innerText = `💡 El phrasal verb es: ${practicePV.pv}`;
 }
+
+// --- Inicializar ---
+renderPVs();
 </script>
 </body>
 </html>
