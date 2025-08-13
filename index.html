@@ -5,14 +5,62 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Aprender Phrasal Verbs - Básico</title>
 <style>
-  body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
-  h2 { color: #333; }
-  .pv-container { background: #fff; padding: 15px; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-  .pv-name { font-weight: bold; font-size: 1.2rem; margin-bottom: 5px; }
-  .phonetic { color: #555; font-style: italic; }
-  .example { margin-top: 8px; }
-  button { margin: 5px 5px 5px 0; padding: 5px 10px; cursor: pointer; border-radius: 4px; border: 1px solid #aaa; background: #e0e0e0; }
-  button:hover { background: #d0d0d0; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to bottom, #e0f7fa, #ffffff);
+    color: #333;
+    margin: 0;
+    padding: 20px;
+  }
+  h2 {
+    text-align: center;
+    color: #00796b;
+    margin-bottom: 30px;
+  }
+  .pv-container {
+    background: #ffffff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+  }
+  .pv-container:hover {
+    transform: scale(1.02);
+  }
+  .pv-name {
+    font-weight: bold;
+    font-size: 1.3rem;
+    color: #004d40;
+  }
+  .phonetic {
+    color: #555;
+    font-style: italic;
+    display: block;
+    margin-top: 2px;
+  }
+  .example {
+    margin-top: 10px;
+    font-size: 1rem;
+  }
+  .example .phonetic {
+    font-style: normal;
+    color: #00796b;
+  }
+  button {
+    margin: 8px 5px 5px 0;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 6px;
+    border: none;
+    background-color: #00796b;
+    color: #fff;
+    font-weight: bold;
+    transition: background-color 0.2s;
+  }
+  button:hover {
+    background-color: #004d40;
+  }
 </style>
 </head>
 <body>
@@ -24,8 +72,8 @@
     Example: I get up early every day. <br>
     <span class="phonetic">/aɪ ɡɛt ʌp ˈɜrli ˈɛvri deɪ/</span>
   </div>
-  <button onclick="speakText('get up')">Listen Phrasal Verb</button>
-  <button onclick="speakText('I get up early every day.')">Listen Example</button>
+  <button onclick="speakText('get up')">🎧 Listen Phrasal Verb</button>
+  <button onclick="speakText('I get up early every day.')">🎧 Listen Example</button>
 </div>
 
 <div class="pv-container">
@@ -34,8 +82,8 @@
     Example: She put on her jacket before leaving. <br>
     <span class="phonetic">/ʃi pʊt ɑn hɜr ˈdʒækɪt bɪˈfɔr ˈlivɪŋ/</span>
   </div>
-  <button onclick="speakText('put on')">Listen Phrasal Verb</button>
-  <button onclick="speakText('She put on her jacket before leaving.')">Listen Example</button>
+  <button onclick="speakText('put on')">🎧 Listen Phrasal Verb</button>
+  <button onclick="speakText('She put on her jacket before leaving.')">🎧 Listen Example</button>
 </div>
 
 <div class="pv-container">
@@ -44,30 +92,32 @@
     Example: The plane takes off at 9 PM. <br>
     <span class="phonetic">/ðə pleɪn teɪks ɔf æt naɪn piː ɛm/</span>
   </div>
-  <button onclick="speakText('take off')">Listen Phrasal Verb</button>
-  <button onclick="speakText('The plane takes off at 9 PM.')">Listen Example</button>
+  <button onclick="speakText('take off')">🎧 Listen Phrasal Verb</button>
+  <button onclick="speakText('The plane takes off at 9 PM.')">🎧 Listen Example</button>
 </div>
 
 <script>
-let englishVoice = null;
+let femaleVoice = null;
 
-function loadEnglishVoice() {
+function loadFemaleVoice() {
   const voices = speechSynthesis.getVoices();
-  if (voices.length > 0 && !englishVoice) {
-    // Voz masculina, en inglés americano
-    englishVoice = voices.find(v => (v.lang === 'en-US' || v.lang.startsWith('en')) && v.name.toLowerCase().includes('male')) || voices[0];
+  if (voices.length > 0 && !femaleVoice) {
+    // Elegir voz femenina de en-US o la primera disponible
+    femaleVoice = voices.find(v => (v.lang === 'en-US' || v.lang.startsWith('en')) && v.name.toLowerCase().includes('female')) 
+                  || voices.find(v => v.lang === 'en-US') 
+                  || voices[0];
   }
 }
 
 speechSynthesis.onvoiceschanged = () => {
-  loadEnglishVoice();
+  loadFemaleVoice();
 };
 
 function speakText(text) {
-  loadEnglishVoice();
+  loadFemaleVoice();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = 'en-US';
-  if (englishVoice) utterance.voice = englishVoice;
+  if (femaleVoice) utterance.voice = femaleVoice;
   utterance.rate = 1;
   speechSynthesis.speak(utterance);
 }
